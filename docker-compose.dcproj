@@ -5,7 +5,7 @@
     <DockerTargetOS>Linux</DockerTargetOS>
     <ProjectGuid>547a2d4c-121d-4d11-bcb7-751ab7aa48ea</ProjectGuid>
     <DockerLaunchAction>LaunchBrowser</DockerLaunchAction>
-    <DockerServiceUrl>{Scheme}://localhost: 55555/swagger</DockerServiceUrl>
+    <DockerServiceUrl>"{Scheme}://{ServiceHost}:{ServicePort}/swagger"</DockerServiceUrl>
     <DockerServiceName>patientsapiapplication</DockerServiceName>
   </PropertyGroup>
   <ItemGroup>

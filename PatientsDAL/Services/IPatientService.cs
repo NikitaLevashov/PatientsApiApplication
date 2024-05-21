@@ -5,12 +5,12 @@ namespace PatientsDAL.Services
 {
     public interface IPatientService
     {
-        PatientResponse GetById(int id);
+        PatientResponse GetById(Guid id);
         IEnumerable<PatientResponse> GetByDate(string birthDate);
         IEnumerable<PatientResponse> GetAll();
         void Add(PatientRequestModel patient);
         void Update(PatientRequestModel patient);
-        void Delete(int id);
+        void Delete(Guid id);
         void GeneratePatients();
     }
 }

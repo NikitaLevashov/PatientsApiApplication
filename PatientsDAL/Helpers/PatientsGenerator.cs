@@ -8,7 +8,6 @@ namespace PatientsDAL.Helpers
 
         public static void GeneratePatients(PatientDbContext db)
         {
-            db.Database.EnsureDeleted();
             db.Database.EnsureCreated();
 
             List<Patient> patients = new List<Patient>();

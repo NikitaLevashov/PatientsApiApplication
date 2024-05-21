@@ -23,7 +23,7 @@ namespace PatientsApiApplication.Controllers
         }
 
         [HttpGet("{id}")]
-        public IActionResult GetPatientById(int id)
+        public IActionResult GetPatientById(Guid id)
         {
             var patient = this.patientService.GetById(id);
 
@@ -82,9 +82,9 @@ namespace PatientsApiApplication.Controllers
 
 
         [HttpDelete("{id}")]
-        public IActionResult Delete(int id)
+        public IActionResult Delete(Guid id)
         {
-            if (id < 1)
+            if (id == Guid.Empty)
             {
                 return BadRequest();
             }

@@ -5,7 +5,7 @@ namespace PatientsDAL.Models
 {
     public class PatientName
     {
-        public Guid Id { get; set; } = new Guid();
+        public Guid Id { get; set; }
 
         public Patient? Patient { get; set; }
 

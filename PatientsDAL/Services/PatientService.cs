@@ -23,9 +23,9 @@ namespace PatientsDAL.Services
             return patients;
         }
 
-        public PatientResponse GetById(int id)
+        public PatientResponse GetById(Guid id)
         {
-            var patient = patientDBContext.Patients.Include(x => x.Name).FirstOrDefault(x => x.Id == id);
+            var patient = patientDBContext.Patients.Include(x => x.Name).FirstOrDefault(x => x.Name.Id == id);
 
             if (patient != null)
             {
@@ -72,6 +72,66 @@ namespace PatientsDAL.Services
             }
 
             return null;
+        }
+
+        public void Add(PatientRequestModel patientData)
+        {
+            if (patientData != null)
+            {
+                Patient patient = new Patient
+                {
+                    BirthDate = patientData.BirthDate,
+                    Active = patientData.Active,
+                    Gender = patientData.Gender,
+                };
+
+                PatientName patientName = new PatientName
+                {
+                    Family = patientData.Name.Family,
+                    FirstName = patientData.Name.Given.Count > 0 ? patientData.Name.Given[0] : string.Empty,
+                    MiddleName = patientData.Name.Given.Count > 1 ? patientData.Name.Given[0] : string.Empty,
+                    Use = patientData.Name.Use,
+                };
+
+                patient.Name = patientName;
+
+                patientDBContext.Patients.Add(patient);
+                patientDBContext.SaveChanges();
+            }
+        }
+
+        public void Update(PatientRequestModel patientData)
+        {
+            var patient = patientDBContext.Patients.Include(x => x.Name).FirstOrDefault(x => x.Name.Id == patientData.Name.Id);
+
+            if (patient != null)
+            {
+                patient.BirthDate = patientData.BirthDate;
+                patient.Active = patientData.Active;
+                patient.Gender = patientData.Gender;
+                patient.Name.Family = patientData.Name?.Family;
+                patient.Name.FirstName = patientData.Name?.Given.Count > 0 ? patientData.Name.Given[0] : string.Empty;
+                patient.Name.MiddleName = patientData.Name?.Given.Count > 1 ? patientData.Name.Given[1] : string.Empty;
+                patient.Name.Use = patientData.Name?.Use;
+
+                patientDBContext.SaveChanges();
+            }
+        }
+
+        public void Delete(Guid id)
+        {
+            var patient = patientDBContext.Patients.Include(x => x.Name).FirstOrDefault(x => x.Name.Id == id);
+
+            if (patient != null)
+            {
+                patientDBContext.Patients.Remove(patient);
+                patientDBContext.SaveChanges();
+            }
+        }
+
+        public void GeneratePatients()
+        {
+            PatientsGenerator.GeneratePatients(patientDBContext);
         }
 
         private IEnumerable<PatientResponse> GetPatientsByDateTimeWithEqPrefix(string birthDay)
@@ -172,66 +232,6 @@ namespace PatientsDAL.Services
             }
 
             return null;
-        }
-
-        public void Add(PatientRequestModel patientData)
-        {
-            if (patientData != null)
-            {
-                Patient patient = new Patient
-                {
-                    BirthDate = patientData.BirthDate,
-                    Active = patientData.Active,
-                    Gender = patientData.Gender,
-                };
-
-                PatientName patientName = new PatientName
-                {
-                    Family = patientData.Name.Family,
-                    FirstName = patientData.Name.Given.Count > 0 ? patientData.Name.Given[0] : string.Empty,
-                    MiddleName = patientData.Name.Given.Count > 1 ? patientData.Name.Given[0] : string.Empty,
-                    Use = patientData.Name.Use,
-                };
-
-                patient.Name = patientName;
-
-                patientDBContext.Patients.Add(patient);
-                patientDBContext.SaveChanges();
-            }
-        }
-
-        public void Update(PatientRequestModel patientData)
-        {
-            var patient = patientDBContext.Patients.Include(x => x.Name).FirstOrDefault(x => x.Id == patientData.Id);
-
-            if (patient != null)
-            {
-                patient.BirthDate = patientData.BirthDate;
-                patient.Active = patientData.Active;
-                patient.Gender = patientData.Gender;
-                patient.Name.Family = patient.Name?.Family;
-                patient.Name.FirstName = patientData.Name?.Given.Count > 0 ? patientData.Name.Given[0] : string.Empty;
-                patient.Name.MiddleName = patientData.Name?.Given.Count > 1 ? patientData.Name.Given[1] : string.Empty;
-                patient.Name.Use = patientData.Name?.Use;
-
-                patientDBContext.SaveChanges();
-            }
-        }
-
-        public void Delete(int id)
-        {
-            var patient = patientDBContext.Patients.Find(id);
-
-            if (patient != null)
-            {
-                patientDBContext.Patients.Remove(patient);
-                patientDBContext.SaveChanges();
-            }
-        }
-
-        public void GeneratePatients()
-        {
-            PatientsGenerator.GeneratePatients(patientDBContext);
         }
     }
 }
